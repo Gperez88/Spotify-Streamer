@@ -16,6 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TopTenTracksActivity"
+            android:label="@string/title_activity_top_ten_tracks"
+            android:parentActivityName=".SearchActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.gperez.spotify_streamer.SearchActivity" />
+        </activity>
     </application>
 
 </manifest>
