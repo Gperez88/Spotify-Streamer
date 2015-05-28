@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ListView;
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class SearchFragment extends Fragment {
+    private EditText inputSearchSoundArtistTextView;
+    private ListView soundArtistResutlListView;
 
     public SearchFragment() {
     }
