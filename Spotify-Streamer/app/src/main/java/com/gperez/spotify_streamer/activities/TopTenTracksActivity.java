@@ -1,12 +1,14 @@
-package com.gperez.spotify_streamer;
+package com.gperez.spotify_streamer.activities;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.gperez.spotify_streamer.R;
 
-public class TopTenTracksActivity extends ActionBarActivity {
+
+public class TopTenTracksActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

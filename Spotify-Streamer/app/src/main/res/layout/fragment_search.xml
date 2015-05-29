@@ -13,7 +13,11 @@
         android:id="@+id/input_search_sound_artist_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small_margin" />
+        android:layout_marginBottom="@dimen/small_margin"
+        android:imeOptions="actionSearch"
+        android:ems="10"
+        android:singleLine="true"
+        android:hint="@string/hint_input_search_sound_artist" />
 
     <ListView
         android:id="@+id/sound_artist_result_listview"

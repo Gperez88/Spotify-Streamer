@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Spotify-Streamer</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -8,4 +8,6 @@
     <string name="pref_access_token">pref_access_token</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="login_spotify">Login Spotify</string>
+    <string name="no_data_found">No data found for &quot;<xliff:g query="query">%s</xliff:g>&quot;.</string>
+    <string name="hint_input_search_sound_artist">Name Artist</string>
 </resources>
