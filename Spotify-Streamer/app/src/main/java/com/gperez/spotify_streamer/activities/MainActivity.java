@@ -112,5 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void startSearchActivity() {
         startActivity(new Intent(this, SearchActivity.class));
+        this.finish();
     }
 }
