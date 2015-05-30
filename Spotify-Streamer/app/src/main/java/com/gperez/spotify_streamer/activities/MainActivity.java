@@ -46,9 +46,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (prefAccessToken != null) {
-            startSearchActivity();
-        }
     }
 
     @Override

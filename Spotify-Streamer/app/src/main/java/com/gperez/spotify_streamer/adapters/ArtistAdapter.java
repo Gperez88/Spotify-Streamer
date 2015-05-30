@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.gperez.spotify_streamer.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import kaaes.spotify.webapi.android.models.Image;
 /**
  * Created by gabriel on 5/28/2015.
  */
-public class ArtistAdapter extends BaseAdapter {
+public class ArtistAdapter extends BaseAdapter implements Serializable{
     private Activity mActivity;
     private List<Artist> mArtistList;
 

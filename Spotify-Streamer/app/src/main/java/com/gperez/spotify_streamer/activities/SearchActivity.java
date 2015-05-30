@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.gperez.spotify_streamer.R;
-
+import com.gperez.spotify_streamer.fragments.SearchFragment;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -14,6 +14,12 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new SearchFragment())
+                    .commit();
+        }
     }
 
     @Override
