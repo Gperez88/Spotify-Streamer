@@ -1,65 +1,49 @@
 package com.gperez.spotify_streamer.tasks;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.gperez.spotify_streamer.R;
+
 import com.gperez.spotify_streamer.adapters.ArtistAdapter;
 
-import kaaes.spotify.webapi.android.SpotifyApi;
-import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 
 /**
  * Created by gabriel on 5/30/2015.
  */
-public class SearchArtistAsyncTask extends AsyncTask<String, Void, ArtistsPager> {
-    private Activity mActivity;
+public class SearchArtistAsyncTask extends BaseSearchAsyncTask {
+    private ArtistAdapter mArtistAdapter;
     private ListView mListView;
 
-    private SpotifyApi mSpotifyApi;
-    private SpotifyService mSpotifyService;
-    private ArtistAdapter mArtistAdapter;
-    private ProgressDialog mProgressDialog;
-
     public SearchArtistAsyncTask(Activity mActivity, ListView mListView) {
-        this.mActivity = mActivity;
+        super(mActivity, R.string.title_progress_dialog, R.string.message_progress_dialog);
         this.mListView = mListView;
     }
 
     @Override
-    protected void onPreExecute() {
-        initSpotifyService();
-        initProgressDialog();
-        initAdapterListView();
-    }
-
-    @Override
-    protected ArtistsPager doInBackground(String... params) {
+    protected Object doInBackground(Object[] params) {
         if (params == null || params.length == 0) {
             return null;
         }
 
-        String query = params[0];
+        String query = (String) params[0];
 
-        ArtistsPager mArtistsPager = mSpotifyService.searchArtists(query);
+        ArtistsPager artistsPager = mSpotifyService.searchArtists(query);
 
-        return mArtistsPager;
+        return artistsPager;
     }
 
     @Override
-    protected void onPostExecute(ArtistsPager artistsPager) {
-        mProgressDialog.dismiss();
+    protected void onPostExecute(Object result) {
+        super.onPostExecute(result);
 
-        if (artistsPager == null) {
+        if (result == null) {
             return;
         }
 
+        ArtistsPager artistsPager = (ArtistsPager) result;
         int total = artistsPager.artists.total;
         final boolean dataFound = total > 0 ? true : false;
 
@@ -71,26 +55,8 @@ public class SearchArtistAsyncTask extends AsyncTask<String, Void, ArtistsPager>
         }
     }
 
-    private void initSpotifyService() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
-        String prefAccessTokenKey = mActivity.getString(R.string.pref_access_token);
-        String prefAccessToken = prefs.getString(prefAccessTokenKey, null);
-
-        mSpotifyApi = new SpotifyApi();
-        mSpotifyApi.setAccessToken(prefAccessToken);
-
-        mSpotifyService = mSpotifyApi.getService();
-    }
-
-    private void initProgressDialog(){
-        mProgressDialog = new ProgressDialog(mActivity);
-        mProgressDialog.setTitle(mActivity.getString(R.string.title_progress_dialog));
-        mProgressDialog.setMessage(mActivity.getString(R.string.message_progress_dialog));
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.show();
-    }
-
-    private void initAdapterListView(){
+    @Override
+    protected void initAdapterListView() {
         mArtistAdapter = new ArtistAdapter(mActivity);
         mListView.setAdapter(mArtistAdapter);
     }
