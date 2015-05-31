@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/small_padding">
+
+    <ImageView
+        android:id="@+id/thumbnail_sound_artist_result_imageview"
+        android:layout_width="@dimen/thumbnail_sound_artist_result_width"
+        android:layout_height="@dimen/thumbnail_sound_artist_result_height"
+        android:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:padding="@dimen/medium_padding">
+
+        <TextView
+            android:id="@+id/name_sound_artist_result_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/name_sound_artist_result"
+            android:singleLine="true"/>
+
+    </LinearLayout>
+</LinearLayout>
