@@ -10,9 +10,6 @@ import android.widget.ListView;
 import com.gperez.spotify_streamer.R;
 
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class TopTenTracksFragment extends Fragment {
     private ListView topTenTrackListView;
 
