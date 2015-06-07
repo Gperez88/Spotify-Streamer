@@ -5,10 +5,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.gperez.spotify_streamer.R;
-
 import com.gperez.spotify_streamer.adapters.ArtistAdapter;
+import com.gperez.spotify_streamer.models.ArtistWrapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
+import kaaes.spotify.webapi.android.models.Image;
 
 /**
  * Created by gabriel on 5/30/2015.
@@ -30,9 +35,9 @@ public class SearchArtistAsyncTask extends BaseSearchAsyncTask {
 
         String query = (String) params[0];
 
-        ArtistsPager artistsPager = mSpotifyService.searchArtists(query);
+        ArtistsPager result = mSpotifyService.searchArtists(query);
 
-        return artistsPager;
+        return result;
     }
 
     @Override
@@ -45,11 +50,25 @@ public class SearchArtistAsyncTask extends BaseSearchAsyncTask {
 
         ArtistsPager artistsPager = (ArtistsPager) result;
         int total = artistsPager.artists.total;
-        final boolean dataFound = total > 0 ? true : false;
+        final boolean dataFound = total > 0;
 
         if (dataFound) {
-            mArtistAdapter.swapList(artistsPager.artists.items);
+
+            List<ArtistWrapper> artistWrapperList = new ArrayList<>();
+
+            for (Artist artist : artistsPager.artists.items) {
+                String thumbnailImage = null;
+                for (Image image : artist.images) {
+                    thumbnailImage = image.url;
+                    break;
+                }
+
+                artistWrapperList.add(new ArtistWrapper(artist.id, artist.name, thumbnailImage));
+            }
+
+            mArtistAdapter.swapList(artistWrapperList);
             mArtistAdapter.notifyDataSetChanged();
+
         } else {
             Toast.makeText(mActivity, mActivity.getString(R.string.no_data_found), Toast.LENGTH_SHORT).show();
         }

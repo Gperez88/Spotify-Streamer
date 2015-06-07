@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gperez.spotify_streamer.R;
-import com.gperez.spotify_streamer.models.ArtistWrapper;
+import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
@@ -19,45 +19,57 @@ import java.util.List;
 /**
  * Created by gabriel on 5/28/2015.
  */
-public class ArtistAdapter extends BaseAdapter implements Serializable {
+public class ArtistTopTenAdapter extends BaseAdapter implements Serializable{
+    private static final long serialVersionUID = 1L;
+
     private Activity mActivity;
-    private List<ArtistWrapper> mArtistList;
+    private List<TrackTopTenArtistWrapper> mTracksList;
 
     static class Holder {
         ImageView thumbnailImageView;
-        TextView nameArtistTextView;
+        TextView nameAlbumTextView;
+        TextView nameTrackTextView;
     }
 
-    public ArtistAdapter(Activity mActivity) {
+    public ArtistTopTenAdapter(Activity mActivity) {
         this.mActivity = mActivity;
     }
 
-    public ArtistAdapter(Activity mActivity, List<ArtistWrapper> mArtistList) {
+    public ArtistTopTenAdapter(Activity mActivity, List<TrackTopTenArtistWrapper> mTracksList) {
         this.mActivity = mActivity;
-        this.mArtistList = mArtistList;
+        this.mTracksList = mTracksList;
     }
 
     @Override
     public int getCount() {
-        if (mArtistList == null) {
+        if (mTracksList == null) {
             return 0;
         }
 
-        return mArtistList.size();
+        return mTracksList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        if (mArtistList == null) {
+        if (mTracksList == null) {
             return 0;
         }
 
-        return mArtistList.get(position);
+        return mTracksList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
         return position + 1;
+    }
+
+    public void swapList(List<TrackTopTenArtistWrapper> result) {
+
+        if (mTracksList == null) {
+            mTracksList = new ArrayList<>();
+        }
+        mTracksList.clear();
+        mTracksList.addAll(result);
     }
 
     @Override
@@ -67,46 +79,31 @@ public class ArtistAdapter extends BaseAdapter implements Serializable {
         if (convertView == null) {
 
             LayoutInflater inflater = mActivity.getLayoutInflater();
-            view = inflater.inflate(R.layout.item_artist_search_result, null);
+            view = inflater.inflate(R.layout.item_top_ten_tracks, null);
 
             Holder holder = new Holder();
-            holder.thumbnailImageView = (ImageView) view.findViewById(R.id.thumbnail_sound_artist_result_imageview);
-            holder.nameArtistTextView = (TextView) view.findViewById(R.id.name_sound_artist_result_textview);
+            holder.thumbnailImageView = (ImageView) view.findViewById(R.id.thumbnail_artist_top_ten_track_imageview);
+            holder.nameAlbumTextView = (TextView) view.findViewById(R.id.name_album_top_ten_track_textview);
+            holder.nameTrackTextView = (TextView) view.findViewById(R.id.name_track_top_ten_track_textview);
 
             view.setTag(holder);
         }
 
         Holder holder = (Holder) view.getTag();
 
-        ArtistWrapper artist = mArtistList.get(position);
+        TrackTopTenArtistWrapper track = mTracksList.get(position);
 
         Picasso.with(mActivity)
-                .load(artist.getThumbnailImage())
+                .load(track.getAlbumArtThumbnail())
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher)
                 .resizeDimen(R.dimen.thumbnail_sound_artist_result_width, R.dimen.thumbnail_sound_artist_result_height)
                 .centerCrop()
                 .into(holder.thumbnailImageView);
 
-        holder.nameArtistTextView.setText(artist.getName());
+        holder.nameAlbumTextView.setText(track.getAlbumName());
+        holder.nameTrackTextView.setText(track.getTrackName());
 
         return view;
-    }
-
-    public String getArtistId(int position) {
-        return mArtistList.get(position).getSpotifyId();
-    }
-
-    public void swapList(List<ArtistWrapper> result) {
-
-        if (mArtistList == null) {
-            mArtistList = new ArrayList<>();
-        }
-        mArtistList.clear();
-        mArtistList.addAll(result);
-    }
-
-    public List<ArtistWrapper> getmArtistList() {
-        return mArtistList;
     }
 }

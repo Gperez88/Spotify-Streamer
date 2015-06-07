@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.gperez.spotify_streamer.R;
-
+import com.gperez.spotify_streamer.fragments.TopTenTracksFragment;
 
 public class TopTenTracksActivity extends AppCompatActivity {
 
@@ -14,8 +14,14 @@ public class TopTenTracksActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top_ten_tracks);
-    }
 
+        if (savedInstanceState == null) {
+            String artistId = getIntent().getExtras().getString(TopTenTracksFragment.ARG_ARTIST_ID);
+            TopTenTracksFragment mTopTenTracksFragment = TopTenTracksFragment.create(artistId);
+
+            getSupportFragmentManager().beginTransaction().add(R.id.container, mTopTenTracksFragment).commit();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

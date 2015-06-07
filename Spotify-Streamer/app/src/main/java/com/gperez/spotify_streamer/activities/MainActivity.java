@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private String prefAccessTokenKey;
     private String prefAccessToken;
 
-    private Button loginSpotifyButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,13 +36,7 @@ public class MainActivity extends AppCompatActivity {
         prefAccessTokenKey = this.getString(R.string.pref_access_token);
         prefAccessToken = prefs.getString(prefAccessTokenKey, null);
 
-        loginSpotifyButton = (Button) findViewById(R.id.login_spotify_button);
-        loginSpotifyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openLoginWindow();
-            }
-        });
+        openLoginWindow();
 
     }
 
