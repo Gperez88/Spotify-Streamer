@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.fragments.SearchFragment;
+import com.gperez.spotify_streamer.utils.CustomApplication;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -21,6 +22,20 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        ((CustomApplication) getApplication()).detach(this);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        ((CustomApplication) getApplication()).attach(this);
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

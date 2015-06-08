@@ -19,8 +19,7 @@ import java.util.List;
 /**
  * Created by gabriel on 5/28/2015.
  */
-public class ArtistTopTenAdapter extends BaseAdapter implements Serializable{
-    private static final long serialVersionUID = 1L;
+public class ArtistTopTenAdapter extends BaseAdapter{
 
     private Activity mActivity;
     private List<TrackTopTenArtistWrapper> mTracksList;
@@ -63,15 +62,6 @@ public class ArtistTopTenAdapter extends BaseAdapter implements Serializable{
         return position + 1;
     }
 
-    public void swapList(List<TrackTopTenArtistWrapper> result) {
-
-        if (mTracksList == null) {
-            mTracksList = new ArrayList<>();
-        }
-        mTracksList.clear();
-        mTracksList.addAll(result);
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
@@ -105,5 +95,18 @@ public class ArtistTopTenAdapter extends BaseAdapter implements Serializable{
         holder.nameTrackTextView.setText(track.getTrackName());
 
         return view;
+    }
+
+    public void swapList(List<TrackTopTenArtistWrapper> result) {
+
+        if (mTracksList == null) {
+            mTracksList = new ArrayList<>();
+        }
+        mTracksList.clear();
+        mTracksList.addAll(result);
+    }
+
+    public List<TrackTopTenArtistWrapper> getmTracksList() {
+        return mTracksList;
     }
 }

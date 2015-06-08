@@ -7,17 +7,25 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gperez.spotify_streamer.R;
+import com.gperez.spotify_streamer.activities.TopTenTracksActivity;
+import com.gperez.spotify_streamer.adapters.ArtistAdapter;
+import com.gperez.spotify_streamer.adapters.ArtistTopTenAdapter;
+import com.gperez.spotify_streamer.models.ArtistWrapper;
+import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
 import com.gperez.spotify_streamer.tasks.TopTenTracksAsyncTask;
 
+import java.io.Serializable;
+import java.util.List;
+
 public class TopTenTracksFragment extends ListFragment {
-    public static final String ARG_ARTIST_NAME = "arg-artist-name";
-    public static final String ARG_ARTIST_ID = "arg-artist-id";
+    private static final String LIST_ADAPTER_INSTANCE_STATE = "top-ten-list-instance-state";
+    private List<TrackTopTenArtistWrapper> artistWrapperListInstanceState;
 
     public static TopTenTracksFragment create(String artistId) {
         TopTenTracksFragment mTopTenTracksFragment = new TopTenTracksFragment();
 
         Bundle args = new Bundle();
-        args.putString(ARG_ARTIST_ID, artistId);
+        args.putString(TopTenTracksActivity.ARG_ARTIST_ID, artistId);
         mTopTenTracksFragment.setArguments(args);
 
         return mTopTenTracksFragment;
@@ -27,10 +35,21 @@ public class TopTenTracksFragment extends ListFragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable(LIST_ADAPTER_INSTANCE_STATE, (Serializable) ((ArtistTopTenAdapter) getListView().getAdapter()).getmTracksList());
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setRetainInstance(true);
+        if (savedInstanceState != null) {
+            artistWrapperListInstanceState = (List<TrackTopTenArtistWrapper>) savedInstanceState.getSerializable(LIST_ADAPTER_INSTANCE_STATE);
+        }
+
     }
 
     @Override
@@ -43,10 +62,13 @@ public class TopTenTracksFragment extends ListFragment {
     public void onResume() {
         super.onResume();
 
-        String artistId = getArguments().getString(ARG_ARTIST_ID);
-        String artistName = getArguments().getString(ARG_ARTIST_NAME);
-        getActivity().setTitle(artistName);
-
-        new TopTenTracksAsyncTask(getActivity(), this).execute(artistId);
+        //passing the instance of the collection of artist who keep turning the screen.
+        if (artistWrapperListInstanceState != null) {
+            ArtistTopTenAdapter artistTopTenAdapter = new ArtistTopTenAdapter(getActivity(), artistWrapperListInstanceState);
+            getListView().setAdapter(artistTopTenAdapter);
+        } else {
+            String artistId = getArguments().getString(TopTenTracksActivity.ARG_ARTIST_ID);
+            new TopTenTracksAsyncTask(getActivity(), this).execute(artistId);
+        }
     }
 }

@@ -61,11 +61,11 @@ public class SearchFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String artistId = ((ArtistAdapter) soundArtistResultListView.getAdapter()).getArtistId(position);
-                String artistName = ((ArtistWrapper)soundArtistResultListView.getAdapter().getItem(position)).getName();
+                String artistName = ((ArtistWrapper) soundArtistResultListView.getAdapter().getItem(position)).getName();
 
                 Intent intent = new Intent(getActivity(), TopTenTracksActivity.class);
-                intent.putExtra(TopTenTracksFragment.ARG_ARTIST_ID, artistId);
-                intent.putExtra(TopTenTracksFragment.ARG_ARTIST_NAME,artistName);
+                intent.putExtra(TopTenTracksActivity.ARG_ARTIST_ID, artistId);
+                intent.putExtra(TopTenTracksActivity.ARG_ARTIST_NAME,artistName);
 
                 startActivity(intent);
             }
