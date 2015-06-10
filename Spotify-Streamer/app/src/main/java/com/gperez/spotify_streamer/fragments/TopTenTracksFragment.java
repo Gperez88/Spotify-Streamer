@@ -9,6 +9,7 @@ import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.activities.TopTenTracksActivity;
 import com.gperez.spotify_streamer.adapters.ArtistTopTenAdapter;
 import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
+import com.gperez.spotify_streamer.tasks.AsyncTaskParams;
 import com.gperez.spotify_streamer.tasks.TopTenTracksAsyncTask;
 
 public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<ArtistTopTenAdapter, TrackTopTenArtistWrapper> {
@@ -23,7 +24,8 @@ public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<Ar
         return mTopTenTracksFragment;
     }
 
-    public TopTenTracksFragment() {}
+    public TopTenTracksFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,7 +35,11 @@ public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<Ar
     @Override
     protected void initComponents() {
         String artistId = getArguments().getString(TopTenTracksActivity.ARG_ARTIST_ID);
-        new TopTenTracksAsyncTask(getActivity(), this).execute(artistId);
+
+        AsyncTaskParams mAsyncTaskParams =
+                new AsyncTaskParams(getActivity(), TopTenTracksFragment.this, loadData, containerListView, false);
+
+        new TopTenTracksAsyncTask(mAsyncTaskParams).execute(artistId);
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,10 +11,8 @@ import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.models.ArtistWrapper;
 import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,7 +44,7 @@ public class ArtistAdapter extends BaseCustomAdapter<ArtistWrapper> {
 
         if (convertView == null) {
 
-            LayoutInflater inflater = mActivity.getLayoutInflater();
+            LayoutInflater inflater = activity.getLayoutInflater();
             view = inflater.inflate(R.layout.item_artist_search_result, null);
 
             Holder holder = new Holder();
@@ -61,7 +58,7 @@ public class ArtistAdapter extends BaseCustomAdapter<ArtistWrapper> {
 
         ArtistWrapper artist = adapterListItems.get(position);
 
-        Picasso.with(mActivity)
+        Picasso.with(activity)
                 .load(artist.getThumbnailImage())
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher)

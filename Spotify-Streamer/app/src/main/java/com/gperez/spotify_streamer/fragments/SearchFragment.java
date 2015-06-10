@@ -17,6 +17,7 @@ import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.activities.TopTenTracksActivity;
 import com.gperez.spotify_streamer.adapters.ArtistAdapter;
 import com.gperez.spotify_streamer.models.ArtistWrapper;
+import com.gperez.spotify_streamer.tasks.AsyncTaskParams;
 import com.gperez.spotify_streamer.tasks.SearchArtistAsyncTask;
 
 public class SearchFragment extends BaseManagerListViewInstanceFragment<ArtistAdapter, ArtistWrapper> {
@@ -37,7 +38,11 @@ public class SearchFragment extends BaseManagerListViewInstanceFragment<ArtistAd
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    SearchArtistAsyncTask searchArtistAsyncTask = new SearchArtistAsyncTask(getActivity(), getListView());
+
+                    AsyncTaskParams mAsyncTaskParams =
+                            new AsyncTaskParams(getActivity(), SearchFragment.this, loadData, containerListView, true);
+
+                    SearchArtistAsyncTask searchArtistAsyncTask = new SearchArtistAsyncTask(mAsyncTaskParams);
                     searchArtistAsyncTask.execute(textView.getText().toString());
 
                     // hide edit text.

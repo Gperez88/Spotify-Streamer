@@ -2,7 +2,10 @@ package com.gperez.spotify_streamer.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
+import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.adapters.BaseCustomAdapter;
 
 import java.io.Serializable;
@@ -14,6 +17,9 @@ import java.util.List;
 public abstract class BaseManagerListViewInstanceFragment<T extends BaseCustomAdapter, E> extends ListFragment {
     protected static final String ADAPTER_INSTANCE_STATE_KEY = "adapter-instance-state";
     protected List<E> adapterListItemsInstance;
+
+    protected LinearLayout containerListView;
+    protected ProgressBar loadData;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -38,7 +44,7 @@ public abstract class BaseManagerListViewInstanceFragment<T extends BaseCustomAd
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        postCreated();
+        preInitComponents();
     }
 
     @Override
@@ -47,10 +53,13 @@ public abstract class BaseManagerListViewInstanceFragment<T extends BaseCustomAd
         restoreListViewInstanceState();
     }
 
-    private void postCreated() {
+    private void preInitComponents() {
+        containerListView = (LinearLayout)getView().findViewById(R.id.container_listview_linearlayout);
+        loadData = (ProgressBar) getView().findViewById(R.id.load_progressbar);
         initComponents();
     }
 
     protected abstract void initComponents();
+
     protected abstract void restoreListViewInstanceState();
 }

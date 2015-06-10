@@ -1,9 +1,5 @@
 package com.gperez.spotify_streamer.tasks;
 
-import android.app.Activity;
-import android.support.v4.app.ListFragment;
-
-import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.adapters.ArtistTopTenAdapter;
 import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
 
@@ -22,11 +18,9 @@ import kaaes.spotify.webapi.android.models.Tracks;
  */
 public class TopTenTracksAsyncTask extends BaseSearchAsyncTask {
     private ArtistTopTenAdapter mArtistTopTenAdapter;
-    private ListFragment mListFragment;
 
-    public TopTenTracksAsyncTask(Activity mActivity, ListFragment mListFragment) {
-        super(mActivity, R.string.title_progress_dialog, R.string.message_progress_dialog);
-        this.mListFragment = mListFragment;
+    public TopTenTracksAsyncTask(AsyncTaskParams mAsyncTaskParams) {
+        super(mAsyncTaskParams);
     }
 
     @Override
@@ -42,7 +36,7 @@ public class TopTenTracksAsyncTask extends BaseSearchAsyncTask {
         options.put(SpotifyService.LIMIT, 10);
         options.put(SpotifyService.COUNTRY, "DO");
 
-        Tracks result = mSpotifyService.getArtistTopTrack(id, options);
+        Tracks result = spotifyService.getArtistTopTrack(id, options);
 
         return result;
     }
@@ -82,8 +76,8 @@ public class TopTenTracksAsyncTask extends BaseSearchAsyncTask {
 
     @Override
     protected void initAdapterListView() {
-        mArtistTopTenAdapter = new ArtistTopTenAdapter(mActivity);
-        mListFragment.setListAdapter(mArtistTopTenAdapter);
+        mArtistTopTenAdapter = new ArtistTopTenAdapter(asyncTaskParams.getActivity());
+        asyncTaskParams.getListFragment().setListAdapter(mArtistTopTenAdapter);
     }
 
 }

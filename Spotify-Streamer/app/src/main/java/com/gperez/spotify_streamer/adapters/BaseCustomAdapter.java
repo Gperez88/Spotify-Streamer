@@ -9,15 +9,15 @@ import java.util.List;
  * Created by gabriel on 6/9/2015.
  */
 public abstract class BaseCustomAdapter<E> extends BaseAdapter {
-    protected Activity mActivity;
+    protected Activity activity;
     protected List<E> adapterListItems;
 
     public BaseCustomAdapter(Activity mActivity) {
-        this.mActivity = mActivity;
+        this.activity = mActivity;
     }
 
     public BaseCustomAdapter(Activity mActivity, List<E> adapterListItems) {
-        this.mActivity = mActivity;
+        this.activity = mActivity;
         this.adapterListItems = adapterListItems;
     }
 
@@ -39,8 +39,8 @@ public abstract class BaseCustomAdapter<E> extends BaseAdapter {
         return adapterListItems.get(position);
     }
 
-    public Activity getmActivity() {
-        return mActivity;
+    public Activity getActivity() {
+        return activity;
     }
 
     public List<?> getAdapterListItems() {

@@ -1,7 +1,5 @@
 package com.gperez.spotify_streamer.tasks;
 
-import android.app.Activity;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.gperez.spotify_streamer.R;
@@ -19,12 +17,10 @@ import kaaes.spotify.webapi.android.models.Image;
  * Created by gabriel on 5/30/2015.
  */
 public class SearchArtistAsyncTask extends BaseSearchAsyncTask {
-    private ArtistAdapter mArtistAdapter;
-    private ListView mListView;
+    private ArtistAdapter artistAdapter;
 
-    public SearchArtistAsyncTask(Activity mActivity, ListView mListView) {
-        super(mActivity, R.string.title_progress_dialog, R.string.message_progress_dialog);
-        this.mListView = mListView;
+    public SearchArtistAsyncTask(AsyncTaskParams mAsyncTaskParams) {
+        super(mAsyncTaskParams);
     }
 
     @Override
@@ -35,7 +31,7 @@ public class SearchArtistAsyncTask extends BaseSearchAsyncTask {
 
         String query = (String) params[0];
 
-        ArtistsPager result = mSpotifyService.searchArtists(query);
+        ArtistsPager result = spotifyService.searchArtists(query);
 
         return result;
     }
@@ -66,8 +62,8 @@ public class SearchArtistAsyncTask extends BaseSearchAsyncTask {
                 artistWrapperList.add(new ArtistWrapper(artist.id, artist.name, thumbnailImage));
             }
 
-            mArtistAdapter.swapList(artistWrapperList);
-            mArtistAdapter.notifyDataSetChanged();
+            artistAdapter.swapList(artistWrapperList);
+            artistAdapter.notifyDataSetChanged();
 
         } else {
             Toast.makeText(mActivity, mActivity.getString(R.string.no_data_found), Toast.LENGTH_SHORT).show();
@@ -76,7 +72,7 @@ public class SearchArtistAsyncTask extends BaseSearchAsyncTask {
 
     @Override
     protected void initAdapterListView() {
-        mArtistAdapter = new ArtistAdapter(mActivity);
-        mListView.setAdapter(mArtistAdapter);
+        artistAdapter = new ArtistAdapter(asyncTaskParams.getActivity());
+        asyncTaskParams.getListFragment().setListAdapter(artistAdapter);
     }
 }

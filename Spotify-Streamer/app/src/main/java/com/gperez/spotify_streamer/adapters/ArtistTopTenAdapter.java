@@ -44,7 +44,7 @@ public class ArtistTopTenAdapter extends BaseCustomAdapter<TrackTopTenArtistWrap
 
         if (convertView == null) {
 
-            LayoutInflater inflater = mActivity.getLayoutInflater();
+            LayoutInflater inflater = activity.getLayoutInflater();
             view = inflater.inflate(R.layout.item_top_ten_tracks, null);
 
             Holder holder = new Holder();
@@ -59,7 +59,7 @@ public class ArtistTopTenAdapter extends BaseCustomAdapter<TrackTopTenArtistWrap
 
         TrackTopTenArtistWrapper track = adapterListItems.get(position);
 
-        Picasso.with(mActivity)
+        Picasso.with(activity)
                 .load(track.getAlbumArtThumbnail())
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher)
