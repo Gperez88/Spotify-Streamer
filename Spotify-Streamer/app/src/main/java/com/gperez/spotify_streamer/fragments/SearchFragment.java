@@ -1,8 +1,8 @@
 package com.gperez.spotify_streamer.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,64 +12,80 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gperez.spotify_streamer.R;
+import com.gperez.spotify_streamer.activities.TopTenTracksActivity;
 import com.gperez.spotify_streamer.adapters.ArtistAdapter;
+import com.gperez.spotify_streamer.models.ArtistWrapper;
+import com.gperez.spotify_streamer.tasks.AsyncTaskParams;
 import com.gperez.spotify_streamer.tasks.SearchArtistAsyncTask;
 
-public class SearchFragment extends Fragment {
-    private static final String LIST_ADAPTER_INSTANCE_STATE = "mArtistAdapterInstanceState";
-    private ArtistAdapter mArtistAdapterInstanceState;
-
+public class SearchFragment extends BaseManagerListViewInstanceFragment<ArtistAdapter, ArtistWrapper> {
     private EditText inputSearchSoundArtistTextView;
-    private ListView soundArtistResultListView;
 
     public SearchFragment() {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable(LIST_ADAPTER_INSTANCE_STATE, (ArtistAdapter) soundArtistResultListView.getAdapter());
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            mArtistAdapterInstanceState = (ArtistAdapter) savedInstanceState.getSerializable(LIST_ADAPTER_INSTANCE_STATE);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_search, container, false);
-
-        soundArtistResultListView = (ListView) rootView.findViewById(R.id.sound_artist_result_listview);
-
-        if (mArtistAdapterInstanceState != null) {
-            soundArtistResultListView.setAdapter(mArtistAdapterInstanceState);
-        }
-
-        inputSearchSoundArtistTextView = (EditText) rootView.findViewById(R.id.input_search_sound_artist_edittext);
+    protected void initComponents() {
+        inputSearchSoundArtistTextView = (EditText) getView().findViewById(R.id.input_search_sound_artist_edittext);
         inputSearchSoundArtistTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    SearchArtistAsyncTask searchArtistAsyncTask = new SearchArtistAsyncTask(getActivity(), soundArtistResultListView);
-                    searchArtistAsyncTask.execute(textView.getText().toString());
+                    String queryString = textView.getText().toString();
 
-                    // hide edit text.
-                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                    if (queryString != null && !queryString.isEmpty()) {
 
-                    return true;
+                        AsyncTaskParams mAsyncTaskParams =
+                                new AsyncTaskParams(getActivity(), SearchFragment.this, loadData, containerListView, true);
+
+                        SearchArtistAsyncTask searchArtistAsyncTask = new SearchArtistAsyncTask(mAsyncTaskParams);
+                        searchArtistAsyncTask.execute(queryString);
+
+                        // hide edit text.
+                        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+
+                        return true;
+                    }
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.name_artist_require), Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
         });
-
-        return rootView;
     }
 
+    @Override
+    protected void restoreListViewInstanceState() {
+        //passing the instance of the collection of artist who keep turning the screen.
+        if (adapterListItemsInstance != null) {
+            ArtistAdapter artistAdapter = new ArtistAdapter(getActivity(), adapterListItemsInstance);
+            getListView().setAdapter(artistAdapter);
+
+            // Restore previous state (including selected item index and scroll position)
+            if (stateListViewInstance != null) {
+                getListView().onRestoreInstanceState(stateListViewInstance);
+            }
+        }
+    }
+
+    @Override
+    public void onListItemClick(ListView listView, View view, int position, long id) {
+        String artistId = ((ArtistAdapter) listView.getAdapter()).getArtistId(position);
+        String artistName = ((ArtistWrapper) listView.getAdapter().getItem(position)).getName();
+
+        Intent intentTopTenTracks = new Intent(getActivity(), TopTenTracksActivity.class);
+        intentTopTenTracks.putExtra(TopTenTracksActivity.ARG_ARTIST_ID, artistId);
+        intentTopTenTracks.putExtra(TopTenTracksActivity.ARG_ARTIST_NAME, artistName);
+
+        startActivity(intentTopTenTracks);
+    }
 }

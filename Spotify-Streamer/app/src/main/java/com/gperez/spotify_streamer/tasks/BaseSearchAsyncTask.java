@@ -1,44 +1,42 @@
 package com.gperez.spotify_streamer.tasks;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
+import android.view.View;
 
 import com.gperez.spotify_streamer.services.SpotifyApi;
+import com.gperez.spotify_streamer.utils.CustomAsyncTask;
 
 import kaaes.spotify.webapi.android.SpotifyService;
 
 /**
  * Created by gabriel on 5/30/2015.
  */
-public abstract class BaseSearchAsyncTask extends AsyncTask {
-    protected Activity mActivity;
-    protected ProgressDialog mProgressDialog;
-    protected SpotifyService mSpotifyService;
+public abstract class BaseSearchAsyncTask extends CustomAsyncTask {
+    protected AsyncTaskParams asyncTaskParams;
+    protected SpotifyService spotifyService;
 
-    public BaseSearchAsyncTask(Activity mActivity, int titleProgressBarRes, int messageProgressBarRes) {
-        this.mActivity = mActivity;
-        this.mSpotifyService = SpotifyApi.getInstance(mActivity).getService();
-
-        initProgressDialog(titleProgressBarRes, messageProgressBarRes);
+    public BaseSearchAsyncTask(AsyncTaskParams mAsyncTaskParams) {
+        super(mAsyncTaskParams.getActivity());
+        this.asyncTaskParams = mAsyncTaskParams;
+        this.spotifyService = SpotifyApi.getInstance(mAsyncTaskParams.getActivity()).getService();
     }
 
     @Override
     protected void onPreExecute() {
-        mProgressDialog.show();
+        super.onPreExecute();
         initAdapterListView();
+
+        if(asyncTaskParams.isSearchFragment()){
+            asyncTaskParams.getLinearLayout().setVisibility(View.GONE);
+            asyncTaskParams.getProgressBar().setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     protected void onPostExecute(Object o) {
-        mProgressDialog.dismiss();
-    }
+        super.onPostExecute(o);
+        asyncTaskParams.getLinearLayout().setVisibility(View.VISIBLE);
+        asyncTaskParams.getProgressBar().setVisibility(View.GONE);
 
-    private void initProgressDialog(int titleRes, int messageRes) {
-        mProgressDialog = new ProgressDialog(mActivity);
-        mProgressDialog.setTitle(mActivity.getString(titleRes));
-        mProgressDialog.setMessage(mActivity.getString(messageRes));
-        mProgressDialog.setIndeterminate(true);
     }
 
     protected abstract void initAdapterListView();

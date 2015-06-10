@@ -7,4 +7,6 @@
     <dimen name="medium_padding">16dp</dimen>
     <dimen name="thumbnail_sound_artist_result_width">90dp</dimen>
     <dimen name="thumbnail_sound_artist_result_height">90dp</dimen>
+    <dimen name="spotify_logo_width">200dp</dimen>
+    <dimen name="spotify_logo_height">200dp</dimen>
 </resources>

@@ -4,6 +4,10 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
+    /**
+     *the api 14 was set as the minimum requirement for the com.spotify.sdk.android.authentication
+     *library that uses at least 14 api.
+     **/
     defaultConfig {
         applicationId "com.gperez.spotify_streamer"
         minSdkVersion 14

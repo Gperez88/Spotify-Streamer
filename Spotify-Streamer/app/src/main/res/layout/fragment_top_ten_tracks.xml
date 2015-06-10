@@ -8,8 +8,34 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".TopTenTracksFragment">
 
-    <ListView
-        android:id="@+id/top_ten_track_listview"
+    <!--standard to implement a generic load in the custom layout listview-->
+    <LinearLayout
+        android:id="@+id/container_listview_linearlayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ListView
+            android:id="@id/android:list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawSelectorOnTop="false" />
+
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|center_vertical"
+            android:text="@string/no_data_found"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/load_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true" />
+
 </RelativeLayout>
