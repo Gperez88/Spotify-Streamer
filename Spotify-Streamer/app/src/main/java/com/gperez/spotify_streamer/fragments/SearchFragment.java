@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.activities.TopTenTracksActivity;
@@ -37,19 +38,25 @@ public class SearchFragment extends BaseManagerListViewInstanceFragment<ArtistAd
         inputSearchSoundArtistTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String queryString = textView.getText().toString();
 
-                    AsyncTaskParams mAsyncTaskParams =
-                            new AsyncTaskParams(getActivity(), SearchFragment.this, loadData, containerListView, true);
+                    if (queryString != null && !queryString.isEmpty()) {
 
-                    SearchArtistAsyncTask searchArtistAsyncTask = new SearchArtistAsyncTask(mAsyncTaskParams);
-                    searchArtistAsyncTask.execute(textView.getText().toString());
+                        AsyncTaskParams mAsyncTaskParams =
+                                new AsyncTaskParams(getActivity(), SearchFragment.this, loadData, containerListView, true);
 
-                    // hide edit text.
-                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                        SearchArtistAsyncTask searchArtistAsyncTask = new SearchArtistAsyncTask(mAsyncTaskParams);
+                        searchArtistAsyncTask.execute(queryString);
 
-                    return true;
+                        // hide edit text.
+                        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+
+                        return true;
+                    }
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.name_artist_require), Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }

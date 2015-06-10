@@ -49,6 +49,13 @@ public abstract class BaseManagerListViewInstanceFragment<T extends BaseCustomAd
     }
 
     @Override
+    public void onPause() {
+        // Save ListView state @ onPause
+        stateListViewInstance = getListView().onSaveInstanceState();
+        super.onPause();
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         preInitComponents();
