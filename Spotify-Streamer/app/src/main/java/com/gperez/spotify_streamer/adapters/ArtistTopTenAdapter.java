@@ -8,28 +8,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gperez.spotify_streamer.R;
-import com.gperez.spotify_streamer.models.ArtistWrapper;
+import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by gabriel on 5/28/2015.
  */
-public class ArtistAdapter extends BaseCustomAdapter<ArtistWrapper> {
+public class ArtistTopTenAdapter extends BaseCustomAdapter<TrackTopTenArtistWrapper> {
 
     static class Holder {
         ImageView thumbnailImageView;
-        TextView nameArtistTextView;
+        TextView nameAlbumTextView;
+        TextView nameTrackTextView;
     }
 
-    public ArtistAdapter(Activity mActivity){
+    public ArtistTopTenAdapter(Activity mActivity){
         super(mActivity);
     }
 
-    public ArtistAdapter(Activity mActivity, List<ArtistWrapper> adapterListItems) {
+    public ArtistTopTenAdapter(Activity mActivity, List<TrackTopTenArtistWrapper> adapterListItems) {
         super(mActivity, adapterListItems);
     }
 
@@ -45,37 +45,35 @@ public class ArtistAdapter extends BaseCustomAdapter<ArtistWrapper> {
         if (convertView == null) {
 
             LayoutInflater inflater = activity.getLayoutInflater();
-            view = inflater.inflate(R.layout.item_artist_search_result, null);
+            view = inflater.inflate(R.layout.item_top_ten_tracks, null);
 
             Holder holder = new Holder();
-            holder.thumbnailImageView = (ImageView) view.findViewById(R.id.thumbnail_sound_artist_result_imageview);
-            holder.nameArtistTextView = (TextView) view.findViewById(R.id.name_sound_artist_result_textview);
+            holder.thumbnailImageView = (ImageView) view.findViewById(R.id.thumbnail_artist_top_ten_track_imageview);
+            holder.nameAlbumTextView = (TextView) view.findViewById(R.id.name_album_top_ten_track_textview);
+            holder.nameTrackTextView = (TextView) view.findViewById(R.id.name_track_top_ten_track_textview);
 
             view.setTag(holder);
         }
 
         Holder holder = (Holder) view.getTag();
 
-        ArtistWrapper artist = adapterListItems.get(position);
+        TrackTopTenArtistWrapper track = adapterListItems.get(position);
 
         Picasso.with(activity)
-                .load(artist.getThumbnailImage())
+                .load(track.getAlbumArtThumbnail())
                 .placeholder(R.mipmap.ic_launcher)
                 .error(R.mipmap.ic_launcher)
                 .resizeDimen(R.dimen.thumbnail_sound_artist_result_width, R.dimen.thumbnail_sound_artist_result_height)
                 .centerCrop()
                 .into(holder.thumbnailImageView);
 
-        holder.nameArtistTextView.setText(artist.getName());
+        holder.nameAlbumTextView.setText(track.getAlbumName());
+        holder.nameTrackTextView.setText(track.getTrackName());
 
         return view;
     }
 
-    public String getArtistId(int position) {
-        return adapterListItems.get(position).getSpotifyId();
-    }
-
-    public void swapList(Collection<ArtistWrapper> result) {
+    public void swapList(List<TrackTopTenArtistWrapper> result) {
 
         if (adapterListItems == null) {
             adapterListItems = new ArrayList<>();

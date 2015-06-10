@@ -22,7 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/name_sound_artist_result"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </LinearLayout>

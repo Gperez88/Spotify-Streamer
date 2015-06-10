@@ -2,12 +2,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/black">
 
-    <Button
-        android:id="@+id/login_spotify_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/login_spotify" />
-
+    <ImageView
+        android:id="@+id/spotify_logo_imageview"
+        android:layout_width="@dimen/spotify_logo_width"
+        android:layout_height="@dimen/spotify_logo_height"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/spotify_logo"
+        android:scaleType="fitCenter"/>
 </LinearLayout>
