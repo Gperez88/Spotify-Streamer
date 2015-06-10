@@ -62,6 +62,11 @@ public class SearchFragment extends BaseManagerListViewInstanceFragment<ArtistAd
         if (adapterListItemsInstance != null) {
             ArtistAdapter artistAdapter = new ArtistAdapter(getActivity(), adapterListItemsInstance);
             getListView().setAdapter(artistAdapter);
+
+            // Restore previous state (including selected item index and scroll position)
+            if (stateListViewInstance != null) {
+                getListView().onRestoreInstanceState(stateListViewInstance);
+            }
         }
     }
 
@@ -70,10 +75,10 @@ public class SearchFragment extends BaseManagerListViewInstanceFragment<ArtistAd
         String artistId = ((ArtistAdapter) listView.getAdapter()).getArtistId(position);
         String artistName = ((ArtistWrapper) listView.getAdapter().getItem(position)).getName();
 
-        Intent intent = new Intent(getActivity(), TopTenTracksActivity.class);
-        intent.putExtra(TopTenTracksActivity.ARG_ARTIST_ID, artistId);
-        intent.putExtra(TopTenTracksActivity.ARG_ARTIST_NAME, artistName);
+        Intent intentTopTenTracks = new Intent(getActivity(), TopTenTracksActivity.class);
+        intentTopTenTracks.putExtra(TopTenTracksActivity.ARG_ARTIST_ID, artistId);
+        intentTopTenTracks.putExtra(TopTenTracksActivity.ARG_ARTIST_NAME, artistName);
 
-        startActivity(intent);
+        startActivity(intentTopTenTracks);
     }
 }

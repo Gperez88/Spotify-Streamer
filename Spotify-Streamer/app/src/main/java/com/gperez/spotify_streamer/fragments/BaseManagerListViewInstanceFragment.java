@@ -1,6 +1,7 @@
 package com.gperez.spotify_streamer.fragments;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ListFragment;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -16,7 +17,9 @@ import java.util.List;
  */
 public abstract class BaseManagerListViewInstanceFragment<T extends BaseCustomAdapter, E> extends ListFragment {
     protected static final String ADAPTER_INSTANCE_STATE_KEY = "adapter-instance-state";
+    protected static final String LIST_VIEW_INSTANCE_STATE_KEY = "list-view-instance-state";
     protected List<E> adapterListItemsInstance;
+    protected Parcelable stateListViewInstance;
 
     protected LinearLayout containerListView;
     protected ProgressBar loadData;
@@ -28,6 +31,8 @@ public abstract class BaseManagerListViewInstanceFragment<T extends BaseCustomAd
         outState.putSerializable(ADAPTER_INSTANCE_STATE_KEY, (Serializable)
                 ((T) getListView().getAdapter()).getAdapterListItems());
 
+        outState.putParcelable(LIST_VIEW_INSTANCE_STATE_KEY,getListView().onSaveInstanceState());
+
     }
 
     @Override
@@ -37,6 +42,8 @@ public abstract class BaseManagerListViewInstanceFragment<T extends BaseCustomAd
         if (savedInstanceState != null) {
             adapterListItemsInstance = (List<E>)
                     savedInstanceState.getSerializable(ADAPTER_INSTANCE_STATE_KEY);
+
+            stateListViewInstance = savedInstanceState.getParcelable(LIST_VIEW_INSTANCE_STATE_KEY);
         }
 
     }

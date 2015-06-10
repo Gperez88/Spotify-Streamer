@@ -48,6 +48,11 @@ public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<Ar
         if (adapterListItemsInstance != null) {
             ArtistTopTenAdapter artistTopTenAdapter = new ArtistTopTenAdapter(getActivity(), adapterListItemsInstance);
             getListView().setAdapter(artistTopTenAdapter);
+
+            // Restore previous state (including selected item index and scroll position)
+            if(stateListViewInstance != null) {
+                getListView().onRestoreInstanceState(stateListViewInstance);
+            }
         }
     }
 }

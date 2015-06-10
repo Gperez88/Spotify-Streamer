@@ -9,6 +9,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="login_spotify">Login Spotify</string>
     <string name="no_data">No data</string>
+    <string name="no_result_was_found">no result was found, check the name of the artist and try again.</string>
     <string name="no_data_found">No data found</string>
     <string name="hint_input_search_sound_artist">Name Artist</string>
 </resources>

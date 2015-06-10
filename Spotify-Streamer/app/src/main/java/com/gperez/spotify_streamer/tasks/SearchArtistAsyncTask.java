@@ -66,7 +66,7 @@ public class SearchArtistAsyncTask extends BaseSearchAsyncTask {
             artistAdapter.notifyDataSetChanged();
 
         } else {
-            Toast.makeText(mActivity, mActivity.getString(R.string.no_data_found), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, mActivity.getString(R.string.no_result_was_found), Toast.LENGTH_SHORT).show();
         }
     }
 
