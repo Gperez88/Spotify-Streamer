@@ -14,45 +14,26 @@ import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by gabriel on 5/28/2015.
  */
-public class ArtistAdapter extends BaseAdapter implements Serializable {
-    private Activity mActivity;
-    private List<ArtistWrapper> mArtistList;
+public class ArtistAdapter extends BaseCustomAdapter<ArtistWrapper> {
 
     static class Holder {
         ImageView thumbnailImageView;
         TextView nameArtistTextView;
     }
 
-    public ArtistAdapter(Activity mActivity) {
-        this.mActivity = mActivity;
+    public ArtistAdapter(Activity mActivity){
+        super(mActivity);
     }
 
-    public ArtistAdapter(Activity mActivity, List<ArtistWrapper> mArtistList) {
-        this.mActivity = mActivity;
-        this.mArtistList = mArtistList;
-    }
-
-    @Override
-    public int getCount() {
-        if (mArtistList == null) {
-            return 0;
-        }
-
-        return mArtistList.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        if (mArtistList == null) {
-            return 0;
-        }
-
-        return mArtistList.get(position);
+    public ArtistAdapter(Activity mActivity, List<ArtistWrapper> adapterListItems) {
+        super(mActivity, adapterListItems);
     }
 
     @Override
@@ -78,7 +59,7 @@ public class ArtistAdapter extends BaseAdapter implements Serializable {
 
         Holder holder = (Holder) view.getTag();
 
-        ArtistWrapper artist = mArtistList.get(position);
+        ArtistWrapper artist = adapterListItems.get(position);
 
         Picasso.with(mActivity)
                 .load(artist.getThumbnailImage())
@@ -94,19 +75,16 @@ public class ArtistAdapter extends BaseAdapter implements Serializable {
     }
 
     public String getArtistId(int position) {
-        return mArtistList.get(position).getSpotifyId();
+        return adapterListItems.get(position).getSpotifyId();
     }
 
-    public void swapList(List<ArtistWrapper> result) {
+    public void swapList(Collection<ArtistWrapper> result) {
 
-        if (mArtistList == null) {
-            mArtistList = new ArrayList<>();
+        if (adapterListItems == null) {
+            adapterListItems = new ArrayList<>();
         }
-        mArtistList.clear();
-        mArtistList.addAll(result);
+        adapterListItems.clear();
+        adapterListItems.addAll(result);
     }
 
-    public List<ArtistWrapper> getmArtistList() {
-        return mArtistList;
-    }
 }

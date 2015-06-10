@@ -14,14 +14,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_margin"
-        android:imeOptions="actionSearch"
         android:ems="10"
-        android:singleLine="true"
-        android:hint="@string/hint_input_search_sound_artist" />
+        android:hint="@string/hint_input_search_sound_artist"
+        android:imeOptions="actionSearch"
+        android:singleLine="true"/>
 
     <ListView
-        android:id="@+id/sound_artist_result_listview"
+        android:id="@id/android:list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

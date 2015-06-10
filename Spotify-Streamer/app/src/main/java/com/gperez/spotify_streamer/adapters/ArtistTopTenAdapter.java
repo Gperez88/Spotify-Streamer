@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,17 +11,13 @@ import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
 import com.squareup.picasso.Picasso;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by gabriel on 5/28/2015.
  */
-public class ArtistTopTenAdapter extends BaseAdapter{
-
-    private Activity mActivity;
-    private List<TrackTopTenArtistWrapper> mTracksList;
+public class ArtistTopTenAdapter extends BaseCustomAdapter<TrackTopTenArtistWrapper> {
 
     static class Holder {
         ImageView thumbnailImageView;
@@ -30,31 +25,12 @@ public class ArtistTopTenAdapter extends BaseAdapter{
         TextView nameTrackTextView;
     }
 
-    public ArtistTopTenAdapter(Activity mActivity) {
-        this.mActivity = mActivity;
+    public ArtistTopTenAdapter(Activity mActivity){
+        super(mActivity);
     }
 
-    public ArtistTopTenAdapter(Activity mActivity, List<TrackTopTenArtistWrapper> mTracksList) {
-        this.mActivity = mActivity;
-        this.mTracksList = mTracksList;
-    }
-
-    @Override
-    public int getCount() {
-        if (mTracksList == null) {
-            return 0;
-        }
-
-        return mTracksList.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        if (mTracksList == null) {
-            return 0;
-        }
-
-        return mTracksList.get(position);
+    public ArtistTopTenAdapter(Activity mActivity, List<TrackTopTenArtistWrapper> adapterListItems) {
+        super(mActivity, adapterListItems);
     }
 
     @Override
@@ -81,7 +57,7 @@ public class ArtistTopTenAdapter extends BaseAdapter{
 
         Holder holder = (Holder) view.getTag();
 
-        TrackTopTenArtistWrapper track = mTracksList.get(position);
+        TrackTopTenArtistWrapper track = adapterListItems.get(position);
 
         Picasso.with(mActivity)
                 .load(track.getAlbumArtThumbnail())
@@ -99,14 +75,11 @@ public class ArtistTopTenAdapter extends BaseAdapter{
 
     public void swapList(List<TrackTopTenArtistWrapper> result) {
 
-        if (mTracksList == null) {
-            mTracksList = new ArrayList<>();
+        if (adapterListItems == null) {
+            adapterListItems = new ArrayList<>();
         }
-        mTracksList.clear();
-        mTracksList.addAll(result);
+        adapterListItems.clear();
+        adapterListItems.addAll(result);
     }
 
-    public List<TrackTopTenArtistWrapper> getmTracksList() {
-        return mTracksList;
-    }
 }
