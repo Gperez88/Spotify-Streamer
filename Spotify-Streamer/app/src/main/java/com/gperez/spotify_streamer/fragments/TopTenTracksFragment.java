@@ -1,11 +1,14 @@
 package com.gperez.spotify_streamer.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.gperez.spotify_streamer.R;
+import com.gperez.spotify_streamer.activities.PlayerActivity;
 import com.gperez.spotify_streamer.activities.TopTenTracksActivity;
 import com.gperez.spotify_streamer.adapters.ArtistTopTenAdapter;
 import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
@@ -50,9 +53,14 @@ public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<Ar
             getListView().setAdapter(artistTopTenAdapter);
 
             // Restore previous state (including selected item index and scroll position)
-            if(stateListViewInstance != null) {
+            if (stateListViewInstance != null) {
                 getListView().onRestoreInstanceState(stateListViewInstance);
             }
         }
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        startActivity(new Intent(getActivity(), PlayerActivity.class));
     }
 }
