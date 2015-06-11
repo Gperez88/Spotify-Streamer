@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gperez.spotify_streamer.fragments.PlayerActivityFragment">
+    tools:context="com.gperez.spotify_streamer.fragments.PlayerFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/name_sound_artist_result" />
+            android:text="@string/name_sound_artist_result"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/album_name_player_textview"

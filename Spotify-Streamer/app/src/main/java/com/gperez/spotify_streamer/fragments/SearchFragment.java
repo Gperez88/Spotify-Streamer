@@ -79,12 +79,10 @@ public class SearchFragment extends BaseManagerListViewInstanceFragment<ArtistAd
 
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
-        String artistId = ((ArtistAdapter) listView.getAdapter()).getArtistId(position);
-        String artistName = ((ArtistWrapper) listView.getAdapter().getItem(position)).getName();
+        ArtistWrapper artist = (ArtistWrapper) listView.getAdapter().getItem(position);
 
         Intent intentTopTenTracks = new Intent(getActivity(), TopTenTracksActivity.class);
-        intentTopTenTracks.putExtra(TopTenTracksActivity.ARG_ARTIST_ID, artistId);
-        intentTopTenTracks.putExtra(TopTenTracksActivity.ARG_ARTIST_NAME, artistName);
+        intentTopTenTracks.putExtra(TopTenTracksActivity.ARG_ARTIST, artist);
 
         startActivity(intentTopTenTracks);
     }

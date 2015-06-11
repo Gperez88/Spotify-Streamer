@@ -33,16 +33,16 @@
                 android:value=".activities.SearchActivity" />
         </activity>
         <activity
-            android:name="com.spotify.sdk.android.authentication.LoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity
             android:name=".activities.PlayerActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".activities.SearchActivity" >
+            android:parentActivityName=".activities.TopTenTracksActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.gperez.spotify_streamer.activities.SearchActivity" />
+                android:value=".activities.TopTenTracksActivity" />
         </activity>
+        <activity
+            android:name="com.spotify.sdk.android.authentication.LoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
 </manifest>

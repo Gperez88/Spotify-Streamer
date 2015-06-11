@@ -4,11 +4,11 @@ import android.os.Bundle;
 
 import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.fragments.TopTenTracksFragment;
+import com.gperez.spotify_streamer.models.ArtistWrapper;
 
 public class TopTenTracksActivity extends BaseManagerAsyncTaskActivity {
     private static final String SUBTITLE_INSTANCE_STATE_KEY = "subtitle-instance-state";
-    public static final String ARG_ARTIST_NAME = "arg-artist-name";
-    public static final String ARG_ARTIST_ID = "arg-artist-id";
+    public static final String ARG_ARTIST = "arg-artist";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,12 +16,10 @@ public class TopTenTracksActivity extends BaseManagerAsyncTaskActivity {
         setContentView(R.layout.activity_top_ten_tracks);
 
         if (savedInstanceState == null) {
-            String artistId = getIntent().getExtras().getString(ARG_ARTIST_ID);
-            String artistName = getIntent().getExtras().getString(ARG_ARTIST_NAME);
+            ArtistWrapper artist = (ArtistWrapper)getIntent().getExtras().getSerializable(ARG_ARTIST);
+            getSupportActionBar().setSubtitle(artist.getName());
 
-            getSupportActionBar().setSubtitle(artistName);
-
-            getSupportFragmentManager().beginTransaction().add(R.id.container, TopTenTracksFragment.create(artistId)).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.container, TopTenTracksFragment.create(artist)).commit();
         }
     }
 

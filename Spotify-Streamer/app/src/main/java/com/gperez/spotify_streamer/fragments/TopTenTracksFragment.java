@@ -11,24 +11,24 @@ import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.activities.PlayerActivity;
 import com.gperez.spotify_streamer.activities.TopTenTracksActivity;
 import com.gperez.spotify_streamer.adapters.ArtistTopTenAdapter;
+import com.gperez.spotify_streamer.models.ArtistWrapper;
 import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
 import com.gperez.spotify_streamer.tasks.AsyncTaskParams;
 import com.gperez.spotify_streamer.tasks.TopTenTracksAsyncTask;
 
 public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<ArtistTopTenAdapter, TrackTopTenArtistWrapper> {
 
-    public static TopTenTracksFragment create(String artistId) {
+    public static TopTenTracksFragment create(ArtistWrapper artist) {
         TopTenTracksFragment mTopTenTracksFragment = new TopTenTracksFragment();
 
         Bundle args = new Bundle();
-        args.putString(TopTenTracksActivity.ARG_ARTIST_ID, artistId);
+        args.putSerializable(TopTenTracksActivity.ARG_ARTIST, artist);
         mTopTenTracksFragment.setArguments(args);
 
         return mTopTenTracksFragment;
     }
 
-    public TopTenTracksFragment() {
-    }
+    public TopTenTracksFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,12 +37,12 @@ public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<Ar
 
     @Override
     protected void initComponents() {
-        String artistId = getArguments().getString(TopTenTracksActivity.ARG_ARTIST_ID);
+        ArtistWrapper artist = (ArtistWrapper)getArguments().getSerializable(TopTenTracksActivity.ARG_ARTIST);
 
         AsyncTaskParams mAsyncTaskParams =
                 new AsyncTaskParams(getActivity(), TopTenTracksFragment.this, loadData, containerListView, false);
 
-        new TopTenTracksAsyncTask(mAsyncTaskParams).execute(artistId);
+        new TopTenTracksAsyncTask(mAsyncTaskParams).execute(artist);
     }
 
     @Override
@@ -60,7 +60,13 @@ public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<Ar
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        startActivity(new Intent(getActivity(), PlayerActivity.class));
+    public void onListItemClick(ListView listView, View view, int position, long id) {
+        TrackTopTenArtistWrapper trackTopTenArtistWrapper =
+                (TrackTopTenArtistWrapper) listView.getAdapter().getItem(position);
+
+        Intent playerIntent = new Intent(getActivity(), PlayerActivity.class);
+        playerIntent.putExtra(PlayerActivity.ARG_TOP_TEN_TRACK, trackTopTenArtistWrapper);
+
+        startActivity(playerIntent);
     }
 }

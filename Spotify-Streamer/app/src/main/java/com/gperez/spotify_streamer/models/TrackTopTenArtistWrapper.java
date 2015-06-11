@@ -10,15 +10,17 @@ public class TrackTopTenArtistWrapper implements Serializable {
     private String albumName;
     private String albumArtThumbnail;
     private String previewUrl;
+    private ArtistWrapper artist;
 
     public TrackTopTenArtistWrapper() {
     }
 
-    public TrackTopTenArtistWrapper(String trackName, String albumName, String albumArtThumbnail, String previewUrl) {
+    public TrackTopTenArtistWrapper(String trackName, String albumName, String albumArtThumbnail, String previewUrl, ArtistWrapper artist) {
         this.trackName = trackName;
         this.albumName = albumName;
         this.albumArtThumbnail = albumArtThumbnail;
         this.previewUrl = previewUrl;
+        this.artist = artist;
     }
 
     public String getTrackName() {
@@ -51,5 +53,13 @@ public class TrackTopTenArtistWrapper implements Serializable {
 
     public void setPreviewUrl(String previewUrl) {
         this.previewUrl = previewUrl;
+    }
+
+    public ArtistWrapper getArtist() {
+        return artist;
+    }
+
+    public void setArtist(ArtistWrapper artist) {
+        this.artist = artist;
     }
 }
