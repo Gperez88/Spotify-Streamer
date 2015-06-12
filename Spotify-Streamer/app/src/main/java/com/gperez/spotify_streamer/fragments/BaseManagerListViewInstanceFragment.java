@@ -28,11 +28,12 @@ public abstract class BaseManagerListViewInstanceFragment<T extends BaseCustomAd
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(ADAPTER_INSTANCE_STATE_KEY, (Serializable)
-                ((T) getListView().getAdapter()).getAdapterListItems());
+        if (getListView().getAdapter() != null) {
+            outState.putSerializable(ADAPTER_INSTANCE_STATE_KEY, (Serializable)
+                    ((T) getListView().getAdapter()).getAdapterListItems());
 
-        outState.putParcelable(LIST_VIEW_INSTANCE_STATE_KEY,getListView().onSaveInstanceState());
-
+            outState.putParcelable(LIST_VIEW_INSTANCE_STATE_KEY, getListView().onSaveInstanceState());
+        }
     }
 
     @Override
@@ -68,7 +69,7 @@ public abstract class BaseManagerListViewInstanceFragment<T extends BaseCustomAd
     }
 
     private void preInitComponents() {
-        containerListView = (LinearLayout)getView().findViewById(R.id.container_listview_linearlayout);
+        containerListView = (LinearLayout) getView().findViewById(R.id.container_listview_linearlayout);
         loadData = (ProgressBar) getView().findViewById(R.id.load_progressbar);
         initComponents();
     }
