@@ -1,6 +1,5 @@
 package com.gperez.spotify_streamer.fragments;
 
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -157,6 +156,13 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
         updateProgressSeekBar();
     }
 
+    private void pauseTrack() {
+        playButton.setVisibility(View.VISIBLE);
+        pauseButton.setVisibility(View.GONE);
+        MediaPlayerService.getInstance().pause();
+        replay = true;
+    }
+
     public void updateProgressSeekBar() {
         mHandler.postDelayed(mUpdateTimeTask, 100);
     }
@@ -174,13 +180,6 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
             mHandler.postDelayed(this, 100);
         }
     };
-
-    private void pauseTrack() {
-        playButton.setVisibility(View.VISIBLE);
-        pauseButton.setVisibility(View.GONE);
-        MediaPlayerService.getInstance().pause();
-        replay = true;
-    }
 
     private void prepareTrackPlayer(int currentPositionList) {
         trackTopTenArtist = topTenTrackList.get(currentPositionList);

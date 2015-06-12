@@ -29,7 +29,6 @@ public abstract class BaseManagerListViewInstanceFragment<T extends BaseCustomAd
         super.onSaveInstanceState(outState);
 
         if (getListView().getAdapter() != null) {
-
             outState.putSerializable(ADAPTER_INSTANCE_STATE_KEY, (Serializable)
                     ((T) getListView().getAdapter()).getAdapterListItems());
 

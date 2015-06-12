@@ -1,9 +1,7 @@
 package com.gperez.spotify_streamer.services;
 
-import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.util.Log;
 
 import java.io.IOException;
@@ -24,7 +22,6 @@ public class MediaPlayerService implements MediaPlayer.OnPreparedListener {
 
         return mInstance;
     }
-
 
     public void initMediaPlayer() {
         mMediaPlayer = new MediaPlayer();
