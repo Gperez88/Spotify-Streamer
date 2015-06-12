@@ -43,7 +43,7 @@ public abstract class BaseCustomAdapter<E> extends BaseAdapter {
         return activity;
     }
 
-    public List<?> getAdapterListItems() {
+    public List<E> getAdapterListItems() {
         return adapterListItems;
     }
 }
