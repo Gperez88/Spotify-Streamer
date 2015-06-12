@@ -16,6 +16,9 @@ import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
 import com.gperez.spotify_streamer.tasks.AsyncTaskParams;
 import com.gperez.spotify_streamer.tasks.TopTenTracksAsyncTask;
 
+import java.io.Serializable;
+import java.util.List;
+
 public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<ArtistTopTenAdapter, TrackTopTenArtistWrapper> {
 
     public static TopTenTracksFragment create(ArtistWrapper artist) {
@@ -28,8 +31,6 @@ public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<Ar
         return mTopTenTracksFragment;
     }
 
-    public TopTenTracksFragment() {}
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_top_ten_tracks, container, false);
@@ -37,7 +38,7 @@ public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<Ar
 
     @Override
     protected void initComponents() {
-        ArtistWrapper artist = (ArtistWrapper)getArguments().getSerializable(TopTenTracksActivity.ARG_ARTIST);
+        ArtistWrapper artist = (ArtistWrapper) getArguments().getSerializable(TopTenTracksActivity.ARG_ARTIST);
 
         AsyncTaskParams mAsyncTaskParams =
                 new AsyncTaskParams(getActivity(), TopTenTracksFragment.this, loadData, containerListView, false);
@@ -61,11 +62,13 @@ public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<Ar
 
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
-        TrackTopTenArtistWrapper trackTopTenArtistWrapper =
-                (TrackTopTenArtistWrapper) listView.getAdapter().getItem(position);
+
+        List<TrackTopTenArtistWrapper> topTenTrackList =
+                ((ArtistTopTenAdapter) listView.getAdapter()).getAdapterListItems();
 
         Intent playerIntent = new Intent(getActivity(), PlayerActivity.class);
-        playerIntent.putExtra(PlayerActivity.ARG_TOP_TEN_TRACK, trackTopTenArtistWrapper);
+        playerIntent.putExtra(PlayerActivity.ARG_TOP_TEN_TRACKS, (Serializable) topTenTrackList);
+        playerIntent.putExtra(PlayerActivity.ARG_POSITION_TRACK_LIST, position);
 
         startActivity(playerIntent);
     }
