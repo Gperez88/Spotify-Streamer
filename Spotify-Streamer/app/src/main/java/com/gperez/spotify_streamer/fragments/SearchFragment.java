@@ -62,14 +62,12 @@ public class SearchFragment extends BaseManagerListViewInstanceFragment<ArtistAd
 
     @Override
     protected void restoreListViewInstanceState() {
-        //passing the instance of the collection of artist who keep turning the screen.
         if (adapterListItemsInstance != null) {
             ArtistAdapter artistAdapter = new ArtistAdapter(getActivity(), adapterListItemsInstance);
             getListView().setAdapter(artistAdapter);
 
-            // Restore previous state (including selected item index and scroll position)
-            if (stateListViewInstance != null) {
-                getListView().onRestoreInstanceState(stateListViewInstance);
+            if (mPosition != ListView.INVALID_POSITION) {
+                getListView().smoothScrollToPosition(mPosition);
             }
         }
     }

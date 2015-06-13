@@ -1,5 +1,7 @@
 package com.gperez.spotify_streamer.tasks;
 
+import android.widget.ListView;
+
 import com.gperez.spotify_streamer.adapters.ArtistTopTenAdapter;
 import com.gperez.spotify_streamer.models.ArtistWrapper;
 import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
@@ -20,9 +22,11 @@ import kaaes.spotify.webapi.android.models.Tracks;
 public class TopTenTracksAsyncTask extends BaseSearchAsyncTask {
     private ArtistTopTenAdapter mArtistTopTenAdapter;
     private ArtistWrapper artist;
+    private boolean selectedFirstItem;
 
-    public TopTenTracksAsyncTask(AsyncTaskParams mAsyncTaskParams) {
+    public TopTenTracksAsyncTask(AsyncTaskParams mAsyncTaskParams, boolean selectedFirstItem) {
         super(mAsyncTaskParams);
+        this.selectedFirstItem = selectedFirstItem;
     }
 
     @Override
@@ -69,11 +73,18 @@ public class TopTenTracksAsyncTask extends BaseSearchAsyncTask {
                 }
 
                 trackTopTenArtistWrapperArrayList.add(new TrackTopTenArtistWrapper(track.name,
-                        track.album.name, thumbnailImage, track.preview_url, artist));
+                        track.duration_ms, track.album.name, thumbnailImage, track.preview_url, artist));
             }
 
             mArtistTopTenAdapter.swapList(trackTopTenArtistWrapperArrayList);
             mArtistTopTenAdapter.notifyDataSetChanged();
+
+            ListView listView = asyncTaskParams.getListFragment().getListView();
+
+            if(selectedFirstItem) {
+                listView.setItemChecked(0, true);
+                listView.performItemClick(listView, 0, listView.getItemIdAtPosition(0));
+            }
         }
 
     }

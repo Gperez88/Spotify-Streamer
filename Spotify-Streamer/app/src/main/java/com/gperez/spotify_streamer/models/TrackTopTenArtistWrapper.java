@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class TrackTopTenArtistWrapper implements Serializable {
     private String trackName;
+    private long trackDuration;
     private String albumName;
     private String albumArtThumbnail;
     private String previewUrl;
@@ -15,8 +16,9 @@ public class TrackTopTenArtistWrapper implements Serializable {
     public TrackTopTenArtistWrapper() {
     }
 
-    public TrackTopTenArtistWrapper(String trackName, String albumName, String albumArtThumbnail, String previewUrl, ArtistWrapper artist) {
+    public TrackTopTenArtistWrapper(String trackName, long trackDuration, String albumName, String albumArtThumbnail, String previewUrl, ArtistWrapper artist) {
         this.trackName = trackName;
+        this.trackDuration = trackDuration;
         this.albumName = albumName;
         this.albumArtThumbnail = albumArtThumbnail;
         this.previewUrl = previewUrl;
@@ -29,6 +31,14 @@ public class TrackTopTenArtistWrapper implements Serializable {
 
     public void setTrackName(String trackName) {
         this.trackName = trackName;
+    }
+
+    public long getTrackDuration() {
+        return trackDuration;
+    }
+
+    public void setTrackDuration(long trackDuration) {
+        this.trackDuration = trackDuration;
     }
 
     public String getAlbumName() {

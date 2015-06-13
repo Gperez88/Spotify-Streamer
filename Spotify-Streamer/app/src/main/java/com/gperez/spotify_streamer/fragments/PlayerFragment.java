@@ -16,24 +16,21 @@ import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.activities.PlayerActivity;
 import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
 import com.gperez.spotify_streamer.utils.Utils;
-import com.squareup.okhttp.internal.Util;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
-public class PlayerFragment extends BaseFragment implements View.OnClickListener, MediaPlayer.OnPreparedListener{
-    private static final String CURRENT_POSITION_TRACK = "current-position-track";
+public class PlayerFragment extends BaseFragment implements View.OnClickListener, MediaPlayer.OnPreparedListener {
+    private static final String CURRENT_POSITION_TRACK = "current_position_track";
     private int lastPositionSaveInstance = -1;
 
     private List<TrackTopTenArtistWrapper> topTenTrackList;
-    private TrackTopTenArtistWrapper trackTopTenArtist;
 
-    private int firstPositionList = 0;
     private int lastPositionList;
     private int currentPositionList = -1;
-
+    private int firstPositionList = 0;
     private TextView artistNamePlayer;
     private TextView albumNamePlayer;
     private TextView trackNamePlayer;
@@ -52,7 +49,7 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
 
     private Handler mHandler = new Handler();
 
-    public static PlayerFragment create(List<TrackTopTenArtistWrapper> topTenTrackList, int currentPositionList) {
+    public static PlayerFragment newInstance(List<TrackTopTenArtistWrapper> topTenTrackList, int currentPositionList) {
         PlayerFragment playerFragment = new PlayerFragment();
 
         Bundle args = new Bundle();
@@ -84,40 +81,45 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
         outState.putInt(CURRENT_POSITION_TRACK, currentPositionList);
     }
 
-
     @Override
     protected void initComponents() {
-        topTenTrackList = (List<TrackTopTenArtistWrapper>)
-                getArguments().getSerializable(PlayerActivity.ARG_TOP_TEN_TRACKS);
 
-        currentPositionList = lastPositionSaveInstance >= 0 ? lastPositionSaveInstance :
-                getArguments().getInt(PlayerActivity.ARG_POSITION_TRACK_LIST);
+        //when you start this for a tablet.
+        if (getArguments() != null) {
 
-        lastPositionList = topTenTrackList.size() - 1;
+            topTenTrackList = (List<TrackTopTenArtistWrapper>)
+                    getArguments().getSerializable(PlayerActivity.ARG_TOP_TEN_TRACKS);
 
-        artistNamePlayer = (TextView) getView().findViewById(R.id.artist_name_player_textview);
-        albumNamePlayer = (TextView) getView().findViewById(R.id.album_name_player_textview);
-        trackNamePlayer = (TextView) getView().findViewById(R.id.track_name_player_textview);
-        albumArtworkPlayer = (ImageView) getView().findViewById(R.id.album_artwork_player_imageview);
+            currentPositionList = lastPositionSaveInstance >= 0 ? lastPositionSaveInstance :
+                    getArguments().getInt(PlayerActivity.ARG_POSITION_TRACK_LIST);
 
-        progressTrack = (TextView) getView().findViewById(R.id.progress_track_textview);
-        durationTrack = (TextView) getView().findViewById(R.id.duration_track_textview);
+            lastPositionList = topTenTrackList.size() - 1;
 
-        progressSeekBar = (SeekBar) getView().findViewById(R.id.progress_player_seekbar);
+            artistNamePlayer = (TextView) getView().findViewById(R.id.artist_name_player_textview);
+            albumNamePlayer = (TextView) getView().findViewById(R.id.album_name_player_textview);
+            trackNamePlayer = (TextView) getView().findViewById(R.id.track_name_player_textview);
+            albumArtworkPlayer = (ImageView) getView().findViewById(R.id.album_artwork_player_imageview);
 
-        nextButton = (ImageButton) getView().findViewById(R.id.next_button);
-        previousButton = (ImageButton) getView().findViewById(R.id.previous_button);
-        playButton = (ImageButton) getView().findViewById(R.id.play_button);
+            progressTrack = (TextView) getView().findViewById(R.id.progress_track_textview);
+            durationTrack = (TextView) getView().findViewById(R.id.duration_track_textview);
 
-        nextButton.setOnClickListener(this);
-        previousButton.setOnClickListener(this);
-        playButton.setOnClickListener(this);
+            progressSeekBar = (SeekBar) getView().findViewById(R.id.progress_player_seekbar);
 
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setOnPreparedListener(this);
+            nextButton = (ImageButton) getView().findViewById(R.id.next_button);
+            previousButton = (ImageButton) getView().findViewById(R.id.previous_button);
+            playButton = (ImageButton) getView().findViewById(R.id.play_button);
 
-        prepareTrackPlayer(currentPositionList);
+            nextButton.setOnClickListener(this);
+            previousButton.setOnClickListener(this);
+            playButton.setOnClickListener(this);
+
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setOnPreparedListener(this);
+
+            prepareTrackPlayer(currentPositionList);
+
+        }
     }
 
     @Override
@@ -191,7 +193,6 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
         try {
             mediaPlayer.reset();
             mediaPlayer.setDataSource(trackUrl);
-
             mediaPlayer.prepareAsync();
 
             playButton.setImageResource(R.mipmap.ic_media_pause);
@@ -201,11 +202,7 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
 
             updateProgressSeekBar();
 
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (IllegalStateException | IOException | IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
@@ -214,24 +211,8 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
         mHandler.postDelayed(mUpdateTimeTask, 100);
     }
 
-    private Runnable mUpdateTimeTask = new Runnable() {
-        public void run() {
-            long totalDuration = mediaPlayer.getDuration();
-            long currentDuration = mediaPlayer.getCurrentPosition();
-
-            progressTrack.setText(Utils.milliSecondsToTimer(currentDuration));
-            durationTrack.setText(Utils.milliSecondsToTimer(totalDuration));
-
-            int progress = (Utils.getProgressPercentage(currentDuration, totalDuration));
-            progressSeekBar.setProgress(progress);
-
-            // Running this thread after 100 milliseconds
-            mHandler.postDelayed(this, 100);
-        }
-    };
-
     private void prepareTrackPlayer(int currentPositionList) {
-        trackTopTenArtist = topTenTrackList.get(currentPositionList);
+        TrackTopTenArtistWrapper trackTopTenArtist = topTenTrackList.get(currentPositionList);
 
         artistNamePlayer.setText(trackTopTenArtist.getArtist().getName());
         albumNamePlayer.setText(trackTopTenArtist.getAlbumName());
@@ -258,4 +239,20 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
             mHandler.removeCallbacks(mUpdateTimeTask);
         }
     }
+
+    private Runnable mUpdateTimeTask = new Runnable() {
+        public void run() {
+            long totalDuration = mediaPlayer.getDuration();
+            long currentDuration = mediaPlayer.getCurrentPosition();
+
+            progressTrack.setText(Utils.milliSecondsToTimer(currentDuration));
+            durationTrack.setText(Utils.milliSecondsToTimer(totalDuration));
+
+            int progress = (Utils.getProgressPercentage(currentDuration, totalDuration));
+            progressSeekBar.setProgress(progress);
+
+            // Running this thread after 100 milliseconds
+            mHandler.postDelayed(this, 100);
+        }
+    };
 }

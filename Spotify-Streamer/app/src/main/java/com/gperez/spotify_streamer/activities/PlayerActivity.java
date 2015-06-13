@@ -10,8 +10,8 @@ import java.util.List;
 
 
 public class PlayerActivity extends BaseActivity {
-    public static final String ARG_TOP_TEN_TRACKS = "arg-top-ten-tracks";
-    public static final String ARG_POSITION_TRACK_LIST = "arg-position-track-list";
+    public static final String ARG_TOP_TEN_TRACKS = "arg_top_ten_tracks";
+    public static final String ARG_POSITION_TRACK_LIST = "arg_position_track_list";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,16 +19,14 @@ public class PlayerActivity extends BaseActivity {
         setContentView(R.layout.activity_player);
 
         if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
 
             List<TrackTopTenArtistWrapper> topTenTrackList =
-                    (List<TrackTopTenArtistWrapper>) extras.getSerializable(ARG_TOP_TEN_TRACKS);
+                    (List<TrackTopTenArtistWrapper>) getExtras().getSerializable(ARG_TOP_TEN_TRACKS);
 
-            int positionList = extras.getInt(ARG_POSITION_TRACK_LIST);
-
+            int positionList = getExtras().getInt(ARG_POSITION_TRACK_LIST);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, PlayerFragment.create(topTenTrackList,positionList))
+                    .add(R.id.container, PlayerFragment.newInstance(topTenTrackList, positionList))
                     .commit();
         }
     }
