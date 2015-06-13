@@ -1,5 +1,7 @@
 package com.gperez.spotify_streamer.fragments;
 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -13,38 +15,42 @@ import android.widget.TextView;
 import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.activities.PlayerActivity;
 import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
-import com.gperez.spotify_streamer.services.MediaPlayerService;
 import com.gperez.spotify_streamer.utils.Utils;
+import com.squareup.okhttp.internal.Util;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
-public class PlayerFragment extends BaseFragment implements View.OnClickListener {
+public class PlayerFragment extends BaseFragment implements View.OnClickListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
+    private static final String CURRENT_POSITION_TRACK = "current-position-track";
+    private int lastPositionSaveInstance = -1;
+
     private List<TrackTopTenArtistWrapper> topTenTrackList;
     private TrackTopTenArtistWrapper trackTopTenArtist;
 
     private int firstPositionList = 0;
     private int lastPositionList;
-    private int currentPositionList;
+    private int currentPositionList = -1;
 
     private TextView artistNamePlayer;
     private TextView albumNamePlayer;
     private TextView trackNamePlayer;
     private ImageView albumArtworkPlayer;
 
-    private TextView durationTrack;
-
     private SeekBar progressSeekBar;
+
+    private TextView progressTrack;
+    private TextView durationTrack;
 
     private ImageButton previousButton;
     private ImageButton nextButton;
     private ImageButton playButton;
-    private ImageButton pauseButton;
+
+    private MediaPlayer mediaPlayer;
 
     private Handler mHandler = new Handler();
-
-    private boolean replay;
 
     public static PlayerFragment create(List<TrackTopTenArtistWrapper> topTenTrackList, int currentPositionList) {
         PlayerFragment playerFragment = new PlayerFragment();
@@ -58,18 +64,35 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            lastPositionSaveInstance = savedInstanceState.getInt(CURRENT_POSITION_TRACK);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_player, container, false);
     }
 
     @Override
-    protected void initComponents() {
-        MediaPlayerService.getInstance().initMediaPlayer();
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
+        outState.putInt(CURRENT_POSITION_TRACK, currentPositionList);
+    }
+
+
+    @Override
+    protected void initComponents() {
         topTenTrackList = (List<TrackTopTenArtistWrapper>)
                 getArguments().getSerializable(PlayerActivity.ARG_TOP_TEN_TRACKS);
 
-        currentPositionList = getArguments().getInt(PlayerActivity.ARG_POSITION_TRACK_LIST);
+        currentPositionList = lastPositionSaveInstance >= 0 ? lastPositionSaveInstance :
+                getArguments().getInt(PlayerActivity.ARG_POSITION_TRACK_LIST);
+
         lastPositionList = topTenTrackList.size() - 1;
 
         artistNamePlayer = (TextView) getView().findViewById(R.id.artist_name_player_textview);
@@ -77,6 +100,7 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
         trackNamePlayer = (TextView) getView().findViewById(R.id.track_name_player_textview);
         albumArtworkPlayer = (ImageView) getView().findViewById(R.id.album_artwork_player_imageview);
 
+        progressTrack = (TextView) getView().findViewById(R.id.progress_track_textview);
         durationTrack = (TextView) getView().findViewById(R.id.duration_track_textview);
 
         progressSeekBar = (SeekBar) getView().findViewById(R.id.progress_player_seekbar);
@@ -84,12 +108,15 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
         nextButton = (ImageButton) getView().findViewById(R.id.next_button);
         previousButton = (ImageButton) getView().findViewById(R.id.previous_button);
         playButton = (ImageButton) getView().findViewById(R.id.play_button);
-        pauseButton = (ImageButton) getView().findViewById(R.id.pause_button);
 
         nextButton.setOnClickListener(this);
         previousButton.setOnClickListener(this);
         playButton.setOnClickListener(this);
-        pauseButton.setOnClickListener(this);
+
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setOnPreparedListener(this);
+        mediaPlayer.setOnCompletionListener(this);
 
         prepareTrackPlayer(currentPositionList);
     }
@@ -106,11 +133,17 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
                 break;
             }
             case R.id.play_button: {
-                playTrack();
-                break;
-            }
-            case R.id.pause_button: {
-                pauseTrack();
+                if (mediaPlayer != null) {
+
+                    if (mediaPlayer.isPlaying()) {
+                        playButton.setImageResource(R.mipmap.ic_media_play);
+                        mediaPlayer.pause();
+                    } else {
+                        playButton.setImageResource(R.mipmap.ic_media_pause);
+                        mediaPlayer.start();
+                    }
+
+                }
                 break;
             }
         }
@@ -119,15 +152,33 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onPause() {
         super.onPause();
+        relaxMediaPlayer(true);
+    }
 
-        MediaPlayerService.getInstance().stop();
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        relaxMediaPlayer(true);
+    }
 
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        mp.start();
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mp.stop();
+        progressSeekBar.setProgress(0);
+        progressTrack.setText("0:00");
+        playButton.setImageResource(R.mipmap.ic_media_play);
     }
 
     private void nextTrack() {
         if (currentPositionList < lastPositionList) {
             currentPositionList++;
 
+            mediaPlayer.stop();
             prepareTrackPlayer(currentPositionList);
         }
     }
@@ -136,44 +187,51 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
         if (currentPositionList > firstPositionList) {
             currentPositionList--;
 
+            mediaPlayer.stop();
             prepareTrackPlayer(currentPositionList);
         }
     }
 
-    private void playTrack() {
-        playButton.setVisibility(View.GONE);
-        pauseButton.setVisibility(View.VISIBLE);
-
-        if (replay) {
-            MediaPlayerService.getInstance().replay();
-        } else {
-            MediaPlayerService.getInstance().play();
+    private void playTrack(String trackUrl) {
+        if (trackUrl == null) {
+            return;
         }
 
-        progressSeekBar.setProgress(0);
-        progressSeekBar.setMax(100);
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(trackUrl);
 
-        updateProgressSeekBar();
+            mediaPlayer.prepareAsync();
+
+            playButton.setImageResource(R.mipmap.ic_media_pause);
+
+            progressSeekBar.setProgress(0);
+            progressSeekBar.setMax(100);
+
+            updateProgressSeekBar();
+
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void pauseTrack() {
-        playButton.setVisibility(View.VISIBLE);
-        pauseButton.setVisibility(View.GONE);
-        MediaPlayerService.getInstance().pause();
-        replay = true;
-    }
-
-    public void updateProgressSeekBar() {
+    private void updateProgressSeekBar() {
         mHandler.postDelayed(mUpdateTimeTask, 100);
     }
 
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
-            long totalDuration = MediaPlayerService.getInstance().getmMediaPlayer().getDuration();
-            long currentDuration = MediaPlayerService.getInstance().getmMediaPlayer().getCurrentPosition();
+            long totalDuration = mediaPlayer.getDuration();
+            long currentDuration = mediaPlayer.getCurrentPosition();
+
+            progressTrack.setText(Utils.milliSecondsToTimer(currentDuration));
+            durationTrack.setText(Utils.milliSecondsToTimer(totalDuration));
 
             int progress = (Utils.getProgressPercentage(currentDuration, totalDuration));
-
             progressSeekBar.setProgress(progress);
 
             // Running this thread after 100 milliseconds
@@ -196,15 +254,17 @@ public class PlayerFragment extends BaseFragment implements View.OnClickListener
                 .centerCrop()
                 .into(albumArtworkPlayer);
 
-        MediaPlayerService.getInstance().setTrackUrl(trackTopTenArtist.getPreviewUrl());
-
-//        durationTrack.setText(Utils.milliSecondsToTimer(
-//                MediaPlayerService.getInstance().getmMediaPlayer().getDuration()).toString());
-
-        if (MediaPlayerService.getInstance().isPlaying()) {
-            pauseTrack();
-        }
-        replay = false;
+        playTrack(trackTopTenArtist.getPreviewUrl());
     }
 
+    private void relaxMediaPlayer(boolean releaseMediaPlayer) {
+
+        if (releaseMediaPlayer && mediaPlayer != null) {
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            mediaPlayer = null;
+
+            mHandler.removeCallbacks(mUpdateTimeTask);
+        }
+    }
 }
