@@ -4,27 +4,22 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.gperez.spotify_streamer.R;
 import com.gperez.spotify_streamer.activities.TopTenTracksActivity;
 import com.gperez.spotify_streamer.adapters.ArtistTopTenAdapter;
+import com.gperez.spotify_streamer.models.ArtistWrapper;
 import com.gperez.spotify_streamer.models.TrackTopTenArtistWrapper;
 import com.gperez.spotify_streamer.tasks.AsyncTaskParams;
 import com.gperez.spotify_streamer.tasks.TopTenTracksAsyncTask;
 
+import java.util.List;
+
 public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<ArtistTopTenAdapter, TrackTopTenArtistWrapper> {
+    public interface Callback {
 
-    public static TopTenTracksFragment create(String artistId) {
-        TopTenTracksFragment mTopTenTracksFragment = new TopTenTracksFragment();
-
-        Bundle args = new Bundle();
-        args.putString(TopTenTracksActivity.ARG_ARTIST_ID, artistId);
-        mTopTenTracksFragment.setArguments(args);
-
-        return mTopTenTracksFragment;
-    }
-
-    public TopTenTracksFragment() {
+        void onItemSelected(List<TrackTopTenArtistWrapper> topTenTrackList, int position);
     }
 
     @Override
@@ -34,25 +29,37 @@ public class TopTenTracksFragment extends BaseManagerListViewInstanceFragment<Ar
 
     @Override
     protected void initComponents() {
-        String artistId = getArguments().getString(TopTenTracksActivity.ARG_ARTIST_ID);
+        ArtistWrapper artist = (ArtistWrapper) ((TopTenTracksActivity) getActivity()).getExtras().getSerializable(TopTenTracksActivity.ARG_ARTIST);
 
         AsyncTaskParams mAsyncTaskParams =
                 new AsyncTaskParams(getActivity(), TopTenTracksFragment.this, loadData, containerListView, false);
 
-        new TopTenTracksAsyncTask(mAsyncTaskParams).execute(artistId);
+        boolean mTowPane = ((TopTenTracksActivity) getActivity()).ismTwoPane();
+
+        new TopTenTracksAsyncTask(mAsyncTaskParams, mTowPane).execute(artist);
+
     }
 
     @Override
     protected void restoreListViewInstanceState() {
-        //passing the instance of the collection of artist who keep turning the screen.
         if (adapterListItemsInstance != null) {
             ArtistTopTenAdapter artistTopTenAdapter = new ArtistTopTenAdapter(getActivity(), adapterListItemsInstance);
             getListView().setAdapter(artistTopTenAdapter);
 
-            // Restore previous state (including selected item index and scroll position)
-            if(stateListViewInstance != null) {
-                getListView().onRestoreInstanceState(stateListViewInstance);
+            if (mPosition != ListView.INVALID_POSITION) {
+                getListView().smoothScrollToPosition(mPosition);
             }
         }
+
+    }
+
+    @Override
+    public void onListItemClick(ListView listView, View view, int position, long id) {
+        List<TrackTopTenArtistWrapper> topTenTrackList =
+                ((ArtistTopTenAdapter) listView.getAdapter()).getAdapterListItems();
+
+        ((Callback) getActivity()).onItemSelected(topTenTrackList, position);
+
+        mPosition = position;
     }
 }

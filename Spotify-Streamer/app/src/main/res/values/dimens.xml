@@ -9,4 +9,6 @@
     <dimen name="thumbnail_sound_artist_result_height">90dp</dimen>
     <dimen name="spotify_logo_width">200dp</dimen>
     <dimen name="spotify_logo_height">200dp</dimen>
+    <dimen name="thumbnail_single_player_width">300dp</dimen>
+    <dimen name="thumbnail_single_player_height">300dp</dimen>
 </resources>
