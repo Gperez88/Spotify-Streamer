@@ -13,9 +13,9 @@ public class SearchActivity extends BaseManagerAsyncTaskActivity {
         setContentView(R.layout.activity_search);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().add(R.id.container, new SearchFragment()).commit();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new SearchFragment())
+                    .commit();
         }
-
     }
-
 }

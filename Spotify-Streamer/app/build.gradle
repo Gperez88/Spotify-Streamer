@@ -5,8 +5,8 @@ android {
     buildToolsVersion "22.0.1"
 
     /**
-     *the api 14 was set as the minimum requirement for the com.spotify.sdk.android.authentication
-     *library that uses at least 14 api.
+     * the api 14 was set as the minimum requirement for the com.spotify.sdk.android.authentication
+     * library that uses at least 14 api.
      **/
     defaultConfig {
         applicationId "com.gperez.spotify_streamer"
@@ -34,8 +34,9 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.spotify.sdk:spotify-auth-1.0.0-beta10@aar'
     compile files('libs/spotify-web-api-android-0.1.0.jar')
-    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile 'com.android.support:support-v4:22.2.0'
 }

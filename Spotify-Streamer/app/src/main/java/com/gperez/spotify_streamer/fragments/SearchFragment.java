@@ -24,9 +24,6 @@ import com.gperez.spotify_streamer.tasks.SearchArtistAsyncTask;
 public class SearchFragment extends BaseManagerListViewInstanceFragment<ArtistAdapter, ArtistWrapper> {
     private EditText inputSearchSoundArtistTextView;
 
-    public SearchFragment() {
-    }
-
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_search, container, false);
@@ -65,26 +62,22 @@ public class SearchFragment extends BaseManagerListViewInstanceFragment<ArtistAd
 
     @Override
     protected void restoreListViewInstanceState() {
-        //passing the instance of the collection of artist who keep turning the screen.
         if (adapterListItemsInstance != null) {
             ArtistAdapter artistAdapter = new ArtistAdapter(getActivity(), adapterListItemsInstance);
             getListView().setAdapter(artistAdapter);
 
-            // Restore previous state (including selected item index and scroll position)
-            if (stateListViewInstance != null) {
-                getListView().onRestoreInstanceState(stateListViewInstance);
+            if (mPosition != ListView.INVALID_POSITION) {
+                getListView().smoothScrollToPosition(mPosition);
             }
         }
     }
 
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
-        String artistId = ((ArtistAdapter) listView.getAdapter()).getArtistId(position);
-        String artistName = ((ArtistWrapper) listView.getAdapter().getItem(position)).getName();
+        ArtistWrapper artist = (ArtistWrapper) listView.getAdapter().getItem(position);
 
         Intent intentTopTenTracks = new Intent(getActivity(), TopTenTracksActivity.class);
-        intentTopTenTracks.putExtra(TopTenTracksActivity.ARG_ARTIST_ID, artistId);
-        intentTopTenTracks.putExtra(TopTenTracksActivity.ARG_ARTIST_NAME, artistName);
+        intentTopTenTracks.putExtra(TopTenTracksActivity.ARG_ARTIST, artist);
 
         startActivity(intentTopTenTracks);
     }
